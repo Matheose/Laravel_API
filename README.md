@@ -4,8 +4,27 @@ Uma API feita em Laravel
 
 ## By Matheose
 
-<p align="center">
-    <a href="#" target="_blank">
-        <img src="https://banners.beyondco.de/M11.png?theme=light&packageManager=&packageName=by+Beer+%26+Code&pattern=architect&style=style_1&description=MLA&md=1&showWatermark=0&fontSize=100px&images=https%3A%2F%2Flaravel.com%2Fimg%2Flogomark.min.svg" width="650">
-    </a>
-</p>
+Estudo feito na BeerAndCode
+
+Quando se inicia esse projeto não tem a pasta vendor então executar esse comando.
+Sem a pasta vendor não se consegue executar o sail.
+E por conta do git a pasta vendor não versionado.
+
+~~~shell
+docker run --rm \
+    -u "$(id -u):$(id -g)" \
+    -v "$(pwd):/var/www/html" \
+    -w /var/www/html \
+    laravelsail/php83-composer:latest \
+    composer install --ignore-platform-reqs
+~~~
+
+Subindo o docker com sail
+~~~shell
+./vendor/bin/sail up
+~~~
+
+Executando as migrations
+~~~shell
+./vendor/bin/sail artisan migrate --seed
+~~~
