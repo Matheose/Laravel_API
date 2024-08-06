@@ -59,6 +59,43 @@ pgsql:
         timeout: 5s
 ~~~
 
+No arquivo .env precisei acrescentar as linhas.
+~~~bash
+WWWGROUP=1000
+WWWUSER=1000
+~~~
+
+Sobre o Banco de dados Postgres.
+No meu notebook não precicei fazer nada.
+Em outro PC eu precisei criar o usuario sail e executar esse escript.
+
+~~~bash
+root@085d603868cc:/# psql -U sail -d modulo_11
+psql: error: connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: FATAL:  role "sail" does not exist
+root@085d603868cc:/# psql -U postgres 
+psql (15.7 (Debian 15.7-1.pgdg120+1))
+Type "help" for help.
+
+postgres=# CREATE USER sail WITH PASSWORD 'password';
+CREATE ROLE
+postgres=# CREATE DATABASE modulo_11;
+CREATE DATABASE
+postgres=# GRANT ALL PRIVILEGES on DATABASE modulo_11 TO sail;
+GRANT
+postgres=# \q
+
+GRANT USAGE ON SCHEMA public TO sail;
+GRANT CREATE ON SCHEMA public TO sail;
+\c modulo_11
+CREATE TABLE public.test_table (
+    id serial PRIMARY KEY,
+    name varchar(255) NOT NULL
+);
+ALTER DATABASE modulo_11 OWNER TO sail;
+ALTER SCHEMA public OWNER TO sail;
+~~~
+
+
 ## Criando controlers
 
 ~~~bash
@@ -72,4 +109,42 @@ Consegue mudar o formato do retorno da API.
 
 ~~~bash
 ./vendor/bin/sail artisan make:resource ClientResource
+~~~
+
+Esse Resource devolve as informações assim:
+~~~json
+{
+	"data": {
+		"name": "Robson Bueno",
+		"email": "robson.bueno@gmail.com",
+		"created_at": "2024-08-06"
+	}
+}
+~~~
+
+Se pode mudar esse data, para isso e so criar uma variavel static na
+ClientResource.php
+
+~~~php
+class ClientResource extends JsonResource
+{
+    public static $wrap = 'comida';
+
+    ...
+}
+~~~
+
+Se quiser remover o data.
+Dentro de app/Providers/AppServiceProvider.php, dentro do metodo boot
+Se tiver usando o paginate e usado o data.
+
+~~~PHP
+public function boot(): void
+{
+    JsonResource::withoutWrapping();
+}
+~~~
+
+~~~shell
+./vendor/bin/sail artisan make:resource ClientCollection    
 ~~~
