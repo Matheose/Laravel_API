@@ -28,3 +28,48 @@ Executando as migrations
 ~~~shell
 ./vendor/bin/sail artisan migrate --seed
 ~~~
+
+## Alteração no docker-compose
+
+~~~bash
+pgsql:
+    image: 'postgres:15'
+    ports:
+        - '${FORWARD_DB_PORT:-5432}:5432'
+    environment:
+        PGPASSWORD: '${DB_PASSWORD:-secret}'
+        POSTGRES_DB: '${DB_DATABASE:-modulo_11}'
+        POSTGRES_USER: '${DB_USERNAME:-sail}'
+        POSTGRES_PASSWORD: '${DB_PASSWORD:-secret}'
+    volumes:
+        - 'sail-pgsql:/var/lib/postgresql/data'
+        - './vendor/laravel/sail/database/pgsql/create-testing-database.sql:/docker-entrypoint-initdb.d/10-create-testing-database.sql'
+    networks:
+        - sail
+    healthcheck:
+        test:
+            - CMD
+            - pg_isready
+            - '-q'
+            - '-d'
+            - '${DB_DATABASE}'
+            - '-U'
+            - '${DB_USERNAME}'
+        retries: 3
+        timeout: 5s
+~~~
+
+## Criando controlers
+
+~~~bash
+./vendor/bin/sail artisan make:controller ClientController -m Client --request --api
+~~~
+
+## API Resource
+
+Encapsula o retorno da API.
+Consegue mudar o formato do retorno da API.
+
+~~~bash
+./vendor/bin/sail artisan make:resource ClientResource
+~~~

@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\ClientController;
+use App\Models\Client;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,3 +18,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+// Route::get('/lanche', fn() => json_encode($_SERVER, true));
+// Route::get('/clients', fn() => Client::with('user')->first());
+
+Route::apiResource('clients', ClientController::class);
