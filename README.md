@@ -72,7 +72,7 @@ Em outro PC eu precisei criar o usuario sail e executar esse escript.
 ~~~bash
 root@085d603868cc:/# psql -U sail -d modulo_11
 psql: error: connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: FATAL:  role "sail" does not exist
-root@085d603868cc:/# psql -U postgres 
+root@085d603868cc:/# psql -U postgres
 psql (15.7 (Debian 15.7-1.pgdg120+1))
 Type "help" for help.
 
@@ -146,5 +146,41 @@ public function boot(): void
 ~~~
 
 ~~~shell
-./vendor/bin/sail artisan make:resource ClientCollection    
+./vendor/bin/sail artisan make:resource ClientCollection
+~~~
+
+# Autenticação via token
+
+Criar um controller com um unico metodo invoke
+
+ ~~~bash
+./vendor/bin/sail artisan make:controller LoginController --invokable
+ ~~~
+
+Necessario a dependencia do laravel/sanctum, lida com autenticação de API.
+
+Na model de User tem que adicionar o
+use HasApiTokens.
+
+Exemplo:
+~~~PHP
+class User extends Authenticatable
+{
+    use HasApiTokens, HasFactory, Notifiable;
+
+    ...
+}
+~~~
+
+Quando se faz login na api e retornado o access_token:
+~~~json
+{
+	"access_token": "1|fkd4DM3T9mKlWzrySYOxFjERh2b7LFs0K2vRZnHh"
+}
+~~~
+
+Para acessar os dados do usuário no Insomnia
+Acesscentar o Header de todos os acesso.
+~~~json
+Authorization: Bearer 1|fkd4DM3T9mKlWzrySYOxFjERh2b7LFs0K2vRZnHh
 ~~~
