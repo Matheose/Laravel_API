@@ -32,6 +32,8 @@ class ClientController extends Controller
      */
     public function store(StoreClientRequest $request)
     {
+        abort_if(!auth()->user()->tokenCan('client:store'), 403, 'Not authorized!');
+
         // dd($request->all());
         DB::transaction(function() use ($request) {
             $user = User::create([
